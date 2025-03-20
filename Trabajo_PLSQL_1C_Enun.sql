@@ -8,12 +8,7 @@ DROP SEQUENCE seq_pedidos;
 
 
 -- Creación de tablas y secuencias
--- Prueba Raul GIT
 
--- Prueba de git
-
-
---aaaaa
 
 
 
