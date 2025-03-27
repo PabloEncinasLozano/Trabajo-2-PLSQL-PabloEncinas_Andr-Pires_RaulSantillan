@@ -99,14 +99,16 @@ create or replace procedure registrar_pedido(
         where id_plato = arg_id_primer_plato;
         
         
-        if dispo !=0 then
+        if dispo !=0  then
             begin
                 select precio into plato1
                 from platos 
                 where id_plato = arg_id_primer_plato;
-         
             end;
-                
+            
+        else
+            DBMS_OUTPUT.PUT_LINE('<><><><><<>< El plato no esta disponible');    
+            
         end IF;
     end IF;
     
@@ -122,7 +124,10 @@ create or replace procedure registrar_pedido(
                 select precio into plato2
                 from platos 
                 where id_plato = arg_id_segundo_plato;
-            end;
+            end;  
+        else
+              DBMS_OUTPUT.PUT_LINE('<><><><><<>< El plato no esta disponible');    
+        
         end IF;
     end IF;
     
@@ -143,6 +148,8 @@ create or replace procedure registrar_pedido(
     
             INSERT INTO pedidos (id_pedido, id_cliente, id_personal, fecha_pedido, total) 
             VALUES (seq_pedidos.nextval, arg_id_cliente, arg_id_personal, CURRENT_DATE, total);
+            
+            commit;
         
         else 
         
@@ -168,10 +175,24 @@ begin
  registrar_pedido(10,21,1,7);
  registrar_pedido(10,21,1);
  registrar_pedido(10,21,NULL,7);
+ 
+ --Revisando seleccion de 0 platos 
  registrar_pedido(10,21,NULL,NULL);
+ 
+ --Revisando limite por empleado
  registrar_pedido(10,21,1,7);
+ --registrar_pedido(10,21,1);
+ --registrar_pedido(10,21,1);
+ 
+ 
+ --Revisando no queda ese plato disponible
+ 
+ update platos
+ set disponible = 0
+ where id_plato=1;
+ 
  registrar_pedido(10,21,1);
- registrar_pedido(10,21,1);
+ registrar_pedido(10,21,1,7);
 
 
 end;
