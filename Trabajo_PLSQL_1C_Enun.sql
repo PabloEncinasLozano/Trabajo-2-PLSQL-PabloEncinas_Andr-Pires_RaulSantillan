@@ -51,6 +51,27 @@ CREATE TABLE detalle_pedido (
 );
 
 
+
+-------Insert para las pruebas
+
+ INSERT INTO clientes (id_cliente, nombre, apellido, telefono) 
+ VALUES (10, 'Juan', 'Martínez', '555123456');
+
+ INSERT INTO personal_servicio (id_personal, nombre, apellido, pedidos_activos) 
+ VALUES (21, 'Pedro', 'Gómez', 0);
+
+ INSERT INTO platos (id_plato, nombre, precio, disponible) 
+ VALUES (1, 'Sopa', 12, 1);
+ 
+INSERT INTO platos (id_plato, nombre, precio, disponible) 
+ VALUES (7, 'Hamborguesa', 23, 0);
+
+COMMIT;
+
+
+--------------------------------------------
+
+
 	
 -- Procedimiento a implementar para realizar la reserva
 create or replace procedure registrar_pedido(
@@ -59,10 +80,72 @@ create or replace procedure registrar_pedido(
     arg_id_primer_plato INTEGER DEFAULT NULL,
     arg_id_segundo_plato INTEGER DEFAULT NULL
 ) is 
+    
+
+ plato1 INTEGER :=0 ;
+ plato2 INTEGER :=0 ;
+ total INTEGER :=0 ;
+ dispo INTEGER :=0 ;
+        
  begin
-  null; -- sustituye esta línea por tu código
+    
+    
+    IF arg_id_primer_plato is not NULL then
+    
+        select disponible into dispo
+        from platos
+        where id_plato = arg_id_primer_plato;
+        
+        
+        if dispo !=0 then
+            begin
+                select precio into plato1
+                from platos 
+                where id_plato = arg_id_primer_plato;
+         
+            end;
+                
+        end IF;
+    end IF;
+    
+    
+    IF arg_id_segundo_plato is not NULL then
+    
+        select disponible into dispo
+        from platos
+        where id_plato = arg_id_segundo_plato;
+        
+        if dispo !=0 then
+            begin
+                select precio into plato2
+                from platos 
+                where id_plato = arg_id_segundo_plato;
+            end;
+        end IF;
+    end IF;
+    
+    total:= plato1+plato2;
+    
+    
+    INSERT INTO pedidos (id_pedido, id_cliente, id_personal, fecha_pedido, total) 
+    VALUES (seq_pedidos.nextval, arg_id_cliente, arg_id_personal, CURRENT_DATE, total);
+
+  --null; -- sustituye esta línea por tu código
+   
 end;
 /
+
+
+
+
+begin
+
+ registrar_pedido(10,21,1,7);
+end;
+/
+
+
+select * from pedidos;
 
 ------ Deja aquí tus respuestas a las preguntas del enunciado:
 -- NO SE CORREGIRÁN RESPUESTAS QUE NO ESTÉN AQUÍ (utiliza el espacio que necesites apra cada una)
