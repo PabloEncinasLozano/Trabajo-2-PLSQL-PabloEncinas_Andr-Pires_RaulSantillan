@@ -64,7 +64,7 @@ CREATE TABLE detalle_pedido (
  VALUES (1, 'Sopa', 12, 1);
  
 INSERT INTO platos (id_plato, nombre, precio, disponible) 
- VALUES (7, 'Hamborguesa', 23, 0);
+ VALUES (7, 'Hamborguesa', 23, 1);
 
 COMMIT;
 
@@ -86,6 +86,8 @@ create or replace procedure registrar_pedido(
  plato2 INTEGER :=0 ;
  total INTEGER :=0 ;
  dispo INTEGER :=0 ;
+ 
+ ped_activos_empleado INTEGER :=1;
         
  begin
     
@@ -124,11 +126,34 @@ create or replace procedure registrar_pedido(
         end IF;
     end IF;
     
+    
+    
     total:= plato1+plato2;
     
+    IF total !=0 then
     
-    INSERT INTO pedidos (id_pedido, id_cliente, id_personal, fecha_pedido, total) 
-    VALUES (seq_pedidos.nextval, arg_id_cliente, arg_id_personal, CURRENT_DATE, total);
+        select count (*)
+        into ped_activos_empleado
+        from pedidos
+        where id_personal = arg_id_personal;
+        
+        
+        if ped_activos_empleado < 5 then
+        
+    
+            INSERT INTO pedidos (id_pedido, id_cliente, id_personal, fecha_pedido, total) 
+            VALUES (seq_pedidos.nextval, arg_id_cliente, arg_id_personal, CURRENT_DATE, total);
+        
+        else 
+        
+            DBMS_OUTPUT.PUT_LINE('========Limite de pedidos por empleado alcanzado (cambiarlo a exception)');
+            
+        end IF;
+        
+    else
+            DBMS_OUTPUT.PUT_LINE('---------No se ha seleccionado ningun plato (cambiarlo a exception)');
+             
+    end IF;
 
   --null; -- sustituye esta línea por tu código
    
@@ -136,16 +161,29 @@ end;
 /
 
 
-
+-------<Zona de pruebas>--------
 
 begin
 
  registrar_pedido(10,21,1,7);
+ registrar_pedido(10,21,1);
+ registrar_pedido(10,21,NULL,7);
+ registrar_pedido(10,21,NULL,NULL);
+ registrar_pedido(10,21,1,7);
+ registrar_pedido(10,21,1);
+ registrar_pedido(10,21,1);
+
+
 end;
 /
 
 
 select * from pedidos;
+
+
+
+
+---------------------------------
 
 ------ Deja aquí tus respuestas a las preguntas del enunciado:
 -- NO SE CORREGIRÁN RESPUESTAS QUE NO ESTÉN AQUÍ (utiliza el espacio que necesites apra cada una)
