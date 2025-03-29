@@ -81,12 +81,16 @@ create or replace procedure registrar_pedido(
     arg_id_segundo_plato INTEGER DEFAULT NULL
 ) is 
     
-
+--  Precio plato 1
  plato1 INTEGER :=0 ;
+ -- Precio plato 2
  plato2 INTEGER :=0 ;
+ -- Precio total del pedido
  total INTEGER :=0 ;
+ -- Verificar disponibilidad del plato
  dispo INTEGER :=0 ;
  
+ -- Cuenta los pedidos activos del empleado
  ped_activos_empleado INTEGER :=1;
         
  begin
@@ -126,6 +130,8 @@ create or replace procedure registrar_pedido(
                 where id_plato = arg_id_segundo_plato;
             end;  
         else
+            rollback;
+            raise_application_error(-20001, 'Uno de los platos seleccionados no esta disponible.');
               DBMS_OUTPUT.PUT_LINE('<><><><><<>< El plato no esta disponible');    
         
         end IF;
@@ -152,12 +158,13 @@ create or replace procedure registrar_pedido(
             commit;
         
         else 
-        
+            
             DBMS_OUTPUT.PUT_LINE('========Limite de pedidos por empleado alcanzado (cambiarlo a exception)');
             
         end IF;
         
     else
+        raise_application_error(-20002, 'El pedido debe contener al menos un plato.');
             DBMS_OUTPUT.PUT_LINE('---------No se ha seleccionado ningun plato (cambiarlo a exception)');
              
     end IF;
