@@ -161,6 +161,11 @@ create or replace procedure registrar_pedido(
         from pedidos
         where id_personal = arg_id_personal;
         
+        --Se puede sustituir por:
+        --select pedidos_activos into ped_activos_empleado
+        --from personal_servicio
+        --where id_personal = arg_id_personal;
+        
         if ped_activos_empleado < 5 then
         
             --Añadir pedido a tabla pedidos
@@ -180,6 +185,11 @@ create or replace procedure registrar_pedido(
                 VALUES (seq_pedidos.nextval, arg_id_segundo_plato, 1);
             end IF;
             
+            --Actualizar pedidos activos del empleado en la tabla personal_servicio
+            
+            UPDATE personal_servicio
+            SET pedidos_activos = pedidos_activos+1
+            WHERE id_personal = arg_id_personal;
             
             commit;
         
