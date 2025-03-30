@@ -161,12 +161,25 @@ create or replace procedure registrar_pedido(
         from pedidos
         where id_personal = arg_id_personal;
         
-        
         if ped_activos_empleado < 5 then
         
+            --Añadir pedido a tabla pedidos
     
             INSERT INTO pedidos (id_pedido, id_cliente, id_personal, fecha_pedido, total) 
             VALUES (seq_pedidos.nextval, arg_id_cliente, arg_id_personal, CURRENT_DATE, total);
+            
+            --Añadir los dos platos a detalles_pedido
+            
+            if arg_id_primer_plato is NOT NULL then
+                INSERT INTO detalle_pedido (id_pedido, id_plato, cantidad)
+                VALUES (seq_pedidos.nextval, arg_id_primer_plato, 1);
+            end IF;
+            
+            if arg_id_segundo_plato is NOT NULL then
+                INSERT INTO detalle_pedido (id_pedido, id_plato, cantidad)
+                VALUES (seq_pedidos.nextval, arg_id_segundo_plato, 1);
+            end IF;
+            
             
             commit;
         
