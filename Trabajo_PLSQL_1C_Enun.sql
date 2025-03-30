@@ -174,8 +174,6 @@ create or replace procedure registrar_pedido(
         
             IdPed:=seq_pedidos.nextval;
         
-        
-            DBMS_OUTPUT.PUT_LINE('Valor de IdPedido ' || IdPed);
             --Añadir pedido a tabla pedidos
     
             INSERT INTO pedidos (id_pedido, id_cliente, id_personal, fecha_pedido, total) 
@@ -261,7 +259,7 @@ select * from personal_servicio;
 
 select * from pedidos;
 
-select * from detalle_pedido
+select * from detalle_pedido;
 
 
 
