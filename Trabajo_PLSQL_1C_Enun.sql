@@ -111,6 +111,8 @@ create or replace procedure registrar_pedido(
             end;
             
         else
+            rollback;
+            raise_application_error(-20001, 'Uno de los platos seleccionados no esta disponible.');
             DBMS_OUTPUT.PUT_LINE('<><><><><<>< El plato no esta disponible');    
             
         end IF;
@@ -158,14 +160,16 @@ create or replace procedure registrar_pedido(
             commit;
         
         else 
-            
+            rollback;
+            raise_application_error(-20003, 'El personal de servicio tiene demasiados pedidos.');
             DBMS_OUTPUT.PUT_LINE('========Limite de pedidos por empleado alcanzado (cambiarlo a exception)');
             
         end IF;
         
     else
+        rollback;
         raise_application_error(-20002, 'El pedido debe contener al menos un plato.');
-            DBMS_OUTPUT.PUT_LINE('---------No se ha seleccionado ningun plato (cambiarlo a exception)');
+        DBMS_OUTPUT.PUT_LINE('---------No se ha seleccionado ningun plato (cambiarlo a exception)');
              
     end IF;
 
