@@ -371,7 +371,7 @@ begin
      -- Si se realiza un pedido con un plato que no existe devuelve en error -20004.
      
     begin
-        dbms_output.put_line('------------------Test4: Realizar un pedido de un plato que no existe------------------');
+        dbms_output.put_line('------------------Test3: Realizar un pedido de un plato que no existe------------------');
         registrar_pedido(1,1,4);
         rollback;
         dbms_output.put_line('MAL: No da error al hacer un pedido con un plato que no existe.');
@@ -387,8 +387,46 @@ begin
             dbms_output.put_line('Mensaje '||SQLERRM);
         end if;
     end;
+    
+    
      -- Si se realiza un pedido que incluye un plato que no est´a ya disponible devuelve el error -20001.
+     
+     begin
+      dbms_output.put_line('------------------Test4: Realiza un pedido con plato no disponible------------------');
+      registrar_pedido(1,1,3);
+      dbms_output.put_line('MAL: No da error al hacer pedido con platos no disponibles.');
+  exception
+    when others then
+      if SQLCODE = -20001 then
+        dbms_output.put_line('BIEN: Detecta pedido con platos nos disponibles.');
+        dbms_output.put_line('Error nro '||SQLCODE);
+        dbms_output.put_line('Mensaje '||SQLERRM);
+      else
+        dbms_output.put_line('MAL: Da error pero no detecta que fallo al hacer la reserva.');
+        dbms_output.put_line('Error nro '||SQLCODE);
+        dbms_output.put_line('Mensaje '||SQLERRM);
+      end if;
+  end;
+  
      -- Personal de servicio ya tiene 5 pedidos activos y se le asigna otro pedido devuelve el error -20003
+     
+     begin
+      dbms_output.put_line('------------------Test5: Numero de pedidos activos excedido------------------');
+      registrar_pedido(1,2,2,1);
+      dbms_output.put_line('MAL: No da error al hacer pedido a empleado con 5 pedidos activos.');
+  exception
+    when others then
+      if SQLCODE = -20003 then
+        dbms_output.put_line('BIEN: Detecta pedido a empleado con 5 pedidos activos.');
+        dbms_output.put_line('Error nro '||SQLCODE);
+        dbms_output.put_line('Mensaje '||SQLERRM);
+      else
+        dbms_output.put_line('MAL: Da error pero no detecta que fallo al hacer la reserva.');
+        dbms_output.put_line('Error nro '||SQLCODE);
+        dbms_output.put_line('Mensaje '||SQLERRM);
+      end if;
+  end;
+  
      -- ... los que os puedan ocurrir que puedan ser necesarios para comprobar el correcto funcionamiento del procedimiento
 
 
