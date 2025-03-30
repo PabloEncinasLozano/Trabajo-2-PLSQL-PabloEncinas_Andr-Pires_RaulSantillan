@@ -279,8 +279,11 @@ select * from detalle_pedido;
 --
 -- * P4.4
 --
--- * P4.5
--- 
+-- * P4.5 ¿Que tipo de estrategia de programacion has utilizado? ¿Como puede verse en tu codigo?
+-- La estrategia principal que se ha usado ha sido defensiba ya que se ha ido haciendo una revision de los datos guardados
+-- antes de modificar cualquier tabla involucrada. Aun asi, hay dos puntos, en la revision de si existen los platos, que
+-- se ha usado una estrategia intermedia, ya que tras hacer el select, se hace el tratamiento de la excepcion en caso 
+-- de que esta select devuelva un error de tipo NO_DATA_FOUND.
 
 
 create or replace
@@ -339,6 +342,7 @@ create or replace procedure test_registrar_pedido is
 begin
 	 
   --caso 1 Pedido correct, se realiza
+  
   begin
     inicializa_test;
   end;
