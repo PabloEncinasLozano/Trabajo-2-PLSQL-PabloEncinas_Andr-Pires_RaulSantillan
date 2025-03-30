@@ -351,7 +351,8 @@ begin
     begin
     dbms_output.put_line('------------------Test2: Realizar un pedido vacio (sin platos)------------------');
     registrar_pedido(1,1);
-    dbms_output.put_line('MAL: No da error al hace pedido son platos.');
+    rollback;
+    dbms_output.put_line('MAL: No da error al hacer pedido sin platos.');
   exception
     when others then
       if SQLCODE = -20002 then
@@ -368,6 +369,24 @@ begin
   
   
      -- Si se realiza un pedido con un plato que no existe devuelve en error -20004.
+     
+    begin
+        dbms_output.put_line('------------------Test4: Realizar un pedido de un plato que no existe------------------');
+        registrar_pedido(1,1,4);
+        rollback;
+        dbms_output.put_line('MAL: No da error al hacer un pedido con un plato que no existe.');
+    exception
+        when others then
+        if SQLCODE = -20004 then
+            dbms_output.put_line('BIEN: Detecta que el plato no existe y no hace el pedido.');
+            dbms_output.put_line('Error nro '||SQLCODE);
+            dbms_output.put_line('Mensaje '||SQLERRM);
+        else
+            dbms_output.put_line('MAL: Da error pero no detecta que fallo al hacer la reserva.');
+            dbms_output.put_line('Error nro '||SQLCODE);
+            dbms_output.put_line('Mensaje '||SQLERRM);
+        end if;
+    end;
      -- Si se realiza un pedido que incluye un plato que no est´a ya disponible devuelve el error -20001.
      -- Personal de servicio ya tiene 5 pedidos activos y se le asigna otro pedido devuelve el error -20003
      -- ... los que os puedan ocurrir que puedan ser necesarios para comprobar el correcto funcionamiento del procedimiento
