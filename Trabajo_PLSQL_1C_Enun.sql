@@ -90,11 +90,8 @@ create or replace procedure registrar_pedido(
  -- Verificar disponibilidad del plato
  dispo INTEGER :=0 ;
  
- --Almacena el ID del pedido actual
- IdPed INTEGER :=0 ;
  
- --Verifica si el plato existe (1 o 0)
- existe INTEGER :=0 ;
+  IdPed INTEGER :=0 ;
  
  -- Cuenta los pedidos activos del empleado
  ped_activos_empleado INTEGER :=1;
@@ -104,7 +101,6 @@ create or replace procedure registrar_pedido(
     -- Revision primer plato
     IF arg_id_primer_plato is not NULL then
     
-<<<<<<< HEAD
         -- Comporbamos si existe
         begin
             select disponible into dispo
@@ -117,28 +113,7 @@ create or replace procedure registrar_pedido(
         end;
 
         -- Comprobamos si esta disponible
-=======
-
-            select count (*) into existe
-            from platos
-            where id_plato = arg_id_primer_plato;
-
-        
-            if existe = 0 then
-                rollback;
-                raise_application_error(-20004, 'El primer plato seleccionado no existe');
-                DBMS_OUTPUT.PUT_LINE('*********** El plato no existe');
-            end IF;
-
-        
-        
-        select disponible into dispo
-        from platos
-        where id_plato = arg_id_primer_plato;
-        
->>>>>>> 8b203b3 (aaaaaaaa)
         if dispo !=0  then
-        
             begin
                 select precio into plato1
                 from platos 
@@ -189,29 +164,12 @@ create or replace procedure registrar_pedido(
     
     -- Revision si se ha pedido plato
     IF total !=0 then
-<<<<<<< HEAD
         
         select pedidos_activos into ped_activos_empleado
         from personal_servicio
         where id_personal = arg_id_personal;
         
         -- Revisar pedidos activos del empleado
-=======
-    
-        --select count (*)
-        --into ped_activos_empleado
-        --from pedidos
-        --where id_personal = arg_id_personal;
-        
-        
-        --Se puede sustituir por:
-        select pedidos_activos into ped_activos_empleado
-        from personal_servicio
-        where id_personal = arg_id_personal;
-        
-        
-        
->>>>>>> 8b203b3 (aaaaaaaa)
         if ped_activos_empleado < 5 then
         
             IdPed:=seq_pedidos.nextval;
@@ -231,14 +189,9 @@ create or replace procedure registrar_pedido(
             end IF;
             
             if arg_id_segundo_plato is NOT NULL then
-            
                 INSERT INTO detalle_pedido (id_pedido, id_plato, cantidad)
                 VALUES (IdPed, arg_id_segundo_plato, 1);
-<<<<<<< HEAD
                 commit;
-=======
-                
->>>>>>> 8b203b3 (aaaaaaaa)
             end IF;
             
             --Actualizar pedidos activos del empleado en la tabla personal_servicio
@@ -252,14 +205,14 @@ create or replace procedure registrar_pedido(
         else 
             rollback;
             raise_application_error(-20003, 'El personal de servicio tiene demasiados pedidos.');
-
+            DBMS_OUTPUT.PUT_LINE('========Limite de pedidos por empleado alcanzado (cambiarlo a exception)');
             
         end IF;
         
     else
         rollback;
         raise_application_error(-20002, 'El pedido debe contener al menos un plato.');
-
+        DBMS_OUTPUT.PUT_LINE('---------No se ha seleccionado ningun plato (cambiarlo a exception)');
              
     end IF;
 
@@ -273,21 +226,12 @@ end;
 
 begin
 
-<<<<<<< HEAD
  registrar_pedido(10,21,1,6);
  --registrar_pedido(10,21,1);
  --registrar_pedido(10,21,NULL,7);
  
  --Revisando seleccion de 0 platos 
  --registrar_pedido(10,21,NULL,NULL);
-=======
- registrar_pedido(10,21,6);
- --registrar_pedido(10,21,NULL, 4);
- --registrar_pedido(10,21,NULL,7);
- 
- --Revisando seleccion de 0 platos 
- --registrar_pedido(10,21);
->>>>>>> 8b203b3 (aaaaaaaa)
  
  --Revisando limite por empleado
  --registrar_pedido(10,21,1,7);
@@ -301,12 +245,7 @@ begin
  --set disponible = 0
  --where id_plato=1;
  
-<<<<<<< HEAD
 
-=======
- --registrar_pedido(10,21,1);
- --registrar_pedido(10,21,Null,1);
->>>>>>> 8b203b3 (aaaaaaaa)
  --registrar_pedido(10,21,1,7);
 
 
@@ -333,7 +272,6 @@ select * from detalle_pedido;
 -- se ha alcanzado.
 --
 -- * P4.2
---
 --
 -- * P4.3
 --
