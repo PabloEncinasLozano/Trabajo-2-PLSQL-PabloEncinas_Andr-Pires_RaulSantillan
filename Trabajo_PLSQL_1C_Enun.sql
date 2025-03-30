@@ -98,19 +98,21 @@ create or replace procedure registrar_pedido(
         
  begin
     
-    
+    -- Revision primer plato
     IF arg_id_primer_plato is not NULL then
     
-        select disponible into dispo
-        from platos
-        where id_plato = arg_id_primer_plato;
-        
-        if dispo is NULL then
+        -- Comporbamos si existe
+        begin
+            select disponible into dispo
+            from platos
+            where id_plato = arg_id_primer_plato;
+        exception
+            when NO_DATA_FOUND then
             rollback;
-            raise_application_error(-20004, 'El primer plato seleccionado no existe');
-            DBMS_OUTPUT.PUT_LINE('*********** El plato no existe');
-        end IF;
-        
+            RAISE_APPLICATION_ERROR(-20004, 'El primer plato seleccionado no existe.');
+        end;
+
+        -- Comprobamos si esta disponible
         if dispo !=0  then
             begin
                 select precio into plato1
@@ -127,19 +129,21 @@ create or replace procedure registrar_pedido(
     end IF;
    
     
-    
+    -- Revison del segundo plato
     IF arg_id_segundo_plato is not NULL then
     
-        select disponible into dispo
-        from platos
-        where id_plato = arg_id_segundo_plato;
-        
-        if dispo is NULL then
+         -- Comporbamos si existe
+        begin
+            select disponible into dispo
+            from platos
+            where id_plato = arg_id_segundo_plato;
+        exception
+            when NO_DATA_FOUND then
             rollback;
-            raise_application_error(-20004, 'El segundo plato seleccionado no existe.');
-            DBMS_OUTPUT.PUT_LINE('************ El plato no existe');
-        end IF;
+            RAISE_APPLICATION_ERROR(-20004, 'El primer plato seleccionado no existe.');
+        end;
         
+        -- Comprobamos si esta disponible
         if dispo !=0 then
             begin
                 select precio into plato2
@@ -158,18 +162,14 @@ create or replace procedure registrar_pedido(
     
     total:= plato1+plato2;
     
+    -- Revision si se ha pedido plato
     IF total !=0 then
-    
-        select count (*)
-        into ped_activos_empleado
-        from pedidos
+        
+        select pedidos_activos into ped_activos_empleado
+        from personal_servicio
         where id_personal = arg_id_personal;
         
-        --Se puede sustituir por:
-        --select pedidos_activos into ped_activos_empleado
-        --from personal_servicio
-        --where id_personal = arg_id_personal;
-        
+        -- Revisar pedidos activos del empleado
         if ped_activos_empleado < 5 then
         
             IdPed:=seq_pedidos.nextval;
@@ -183,16 +183,15 @@ create or replace procedure registrar_pedido(
               
             
             if arg_id_primer_plato is NOT NULL then
-            
-            
-            
                 INSERT INTO detalle_pedido (id_pedido, id_plato, cantidad)
                 VALUES (IdPed, arg_id_primer_plato, 1);
+                commit;
             end IF;
             
             if arg_id_segundo_plato is NOT NULL then
                 INSERT INTO detalle_pedido (id_pedido, id_plato, cantidad)
                 VALUES (IdPed, arg_id_segundo_plato, 1);
+                commit;
             end IF;
             
             --Actualizar pedidos activos del empleado en la tabla personal_servicio
@@ -227,27 +226,27 @@ end;
 
 begin
 
- registrar_pedido(10,21,1,7);
- registrar_pedido(10,21,1);
- registrar_pedido(10,21,NULL,7);
+ registrar_pedido(10,21,1,6);
+ --registrar_pedido(10,21,1);
+ --registrar_pedido(10,21,NULL,7);
  
  --Revisando seleccion de 0 platos 
- registrar_pedido(10,21,NULL,NULL);
+ --registrar_pedido(10,21,NULL,NULL);
  
  --Revisando limite por empleado
- registrar_pedido(10,21,1,7);
- registrar_pedido(10,21,1);
+ --registrar_pedido(10,21,1,7);
+ --registrar_pedido(10,21,1);
  --registrar_pedido(10,21,1);
  
  
  --Revisando no queda ese plato disponible
  
- update platos
- set disponible = 0
- where id_plato=1;
+ --update platos
+ --set disponible = 0
+ --where id_plato=1;
  
- registrar_pedido(10,21,1);
- registrar_pedido(10,21,1,7);
+
+ --registrar_pedido(10,21,1,7);
 
 
 
@@ -267,7 +266,10 @@ select * from detalle_pedido;
 
 ------ Deja aquí tus respuestas a las preguntas del enunciado:
 -- NO SE CORREGIRÁN RESPUESTAS QUE NO ESTÉN AQUÍ (utiliza el espacio que necesites apra cada una)
--- * P4.1
+-- * P4.1  ¿Como garantizas en tu codigo que un miembro del personal de servicio no supere el lımite de pedidos activos?
+-- Se revisa que, de un id de empleado concreto pasado por argumento, este no tenga mas de 5 pedidos. En caso de que
+-- si tenga 5 pedidos activos, se lanzara la excepcion 20003 donde se avisara que el limite de pedidos activos de ese emplado
+-- se ha alcanzado.
 --
 -- * P4.2
 --
