@@ -53,7 +53,7 @@ CREATE TABLE detalle_pedido (
 
 
 -------Insert para las pruebas
-
+/*
  INSERT INTO clientes (id_cliente, nombre, apellido, telefono) 
  VALUES (10, 'Juan', 'Martínez', '555123456');
 
@@ -67,7 +67,7 @@ INSERT INTO platos (id_plato, nombre, precio, disponible)
  VALUES (7, 'Hamborguesa', 23, 1);
 
 COMMIT;
-
+*/
 
 --------------------------------------------
 
@@ -222,11 +222,12 @@ end;
 /
 
 
+/*
 -------<Zona de pruebas>--------
 
 begin
 
- registrar_pedido(10,21,1,6);
+ 
  --registrar_pedido(10,21,1);
  --registrar_pedido(10,21,NULL,7);
  
@@ -253,6 +254,7 @@ begin
 end;
 /
 
+*/
 
 select * from personal_servicio;
 
@@ -343,12 +345,35 @@ begin
   
   -- Idem para el resto de casos
 
-  /* - Si se realiza un pedido vac´ıo (sin platos) devuelve el error -200002.
-     - Si se realiza un pedido con un plato que no existe devuelve en error -20004.
-     - Si se realiza un pedido que incluye un plato que no est´a ya disponible devuelve el error -20001.
-     - Personal de servicio ya tiene 5 pedidos activos y se le asigna otro pedido devuelve el error -20003
-     - ... los que os puedan ocurrir que puedan ser necesarios para comprobar el correcto funcionamiento del procedimiento
-*/
+
+ -- Si se realiza un pedido vac´ıo (sin platos) devuelve el error -200002.
+ 
+    begin
+    dbms_output.put_line('------------------Test2: Realizar un pedido vacio (sin platos)------------------');
+    registrar_pedido(1,1);
+    dbms_output.put_line('MAL: No da error al hace pedido son platos.');
+  exception
+    when others then
+      if SQLCODE = -20002 then
+        dbms_output.put_line('BIEN: Detecta pedido sin platos y no hace la reserva.');
+        dbms_output.put_line('Error nro '||SQLCODE);
+        dbms_output.put_line('Mensaje '||SQLERRM);
+      else
+        dbms_output.put_line('MAL: Da error pero no detecta que fallo al hacer la reserva.');
+        dbms_output.put_line('Error nro '||SQLCODE);
+        dbms_output.put_line('Mensaje '||SQLERRM);
+      end if;
+  end;
+  
+  
+  
+     -- Si se realiza un pedido con un plato que no existe devuelve en error -20004.
+     -- Si se realiza un pedido que incluye un plato que no est´a ya disponible devuelve el error -20001.
+     -- Personal de servicio ya tiene 5 pedidos activos y se le asigna otro pedido devuelve el error -20003
+     -- ... los que os puedan ocurrir que puedan ser necesarios para comprobar el correcto funcionamiento del procedimiento
+
+
+
   
 end;
 /
