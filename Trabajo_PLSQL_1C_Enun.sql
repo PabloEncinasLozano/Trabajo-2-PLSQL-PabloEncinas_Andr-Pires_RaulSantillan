@@ -102,6 +102,11 @@ create or replace procedure registrar_pedido(
         from platos
         where id_plato = arg_id_primer_plato;
         
+        if dispo is NULL then
+            rollback;
+            raise_application_error(-20004, 'El primer plato seleccionado no existe');
+            DBMS_OUTPUT.PUT_LINE('*********** El plato no existe');
+        end IF;
         
         if dispo !=0  then
             begin
@@ -124,6 +129,12 @@ create or replace procedure registrar_pedido(
         select disponible into dispo
         from platos
         where id_plato = arg_id_segundo_plato;
+        
+        if dispo is NULL then
+            rollback;
+            raise_application_error(-20004, 'El segundo plato seleccionado no existe.');
+            DBMS_OUTPUT.PUT_LINE('************ El plato no existe');
+        end IF;
         
         if dispo !=0 then
             begin
