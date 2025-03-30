@@ -90,6 +90,9 @@ create or replace procedure registrar_pedido(
  -- Verificar disponibilidad del plato
  dispo INTEGER :=0 ;
  
+ 
+  IdPed INTEGER :=0 ;
+ 
  -- Cuenta los pedidos activos del empleado
  ped_activos_empleado INTEGER :=1;
         
@@ -122,6 +125,7 @@ create or replace procedure registrar_pedido(
             
         end IF;
     end IF;
+   
     
     
     IF arg_id_segundo_plato is not NULL then
@@ -168,21 +172,29 @@ create or replace procedure registrar_pedido(
         
         if ped_activos_empleado < 5 then
         
+            IdPed:=seq_pedidos.nextval;
+        
+        
+            DBMS_OUTPUT.PUT_LINE('Valor de IdPedido ' || IdPed);
             --Añadir pedido a tabla pedidos
     
             INSERT INTO pedidos (id_pedido, id_cliente, id_personal, fecha_pedido, total) 
-            VALUES (seq_pedidos.nextval, arg_id_cliente, arg_id_personal, CURRENT_DATE, total);
+            VALUES (IdPed, arg_id_cliente, arg_id_personal, CURRENT_DATE, total);
             
             --Añadir los dos platos a detalles_pedido
+              
             
             if arg_id_primer_plato is NOT NULL then
+            
+            
+            
                 INSERT INTO detalle_pedido (id_pedido, id_plato, cantidad)
-                VALUES (seq_pedidos.nextval, arg_id_primer_plato, 1);
+                VALUES (IdPed, arg_id_primer_plato, 1);
             end IF;
             
             if arg_id_segundo_plato is NOT NULL then
                 INSERT INTO detalle_pedido (id_pedido, id_plato, cantidad)
-                VALUES (seq_pedidos.nextval, arg_id_segundo_plato, 1);
+                VALUES (IdPed, arg_id_segundo_plato, 1);
             end IF;
             
             --Actualizar pedidos activos del empleado en la tabla personal_servicio
@@ -226,7 +238,7 @@ begin
  
  --Revisando limite por empleado
  registrar_pedido(10,21,1,7);
- --registrar_pedido(10,21,1);
+ registrar_pedido(10,21,1);
  --registrar_pedido(10,21,1);
  
  
@@ -240,12 +252,16 @@ begin
  registrar_pedido(10,21,1,7);
 
 
+
 end;
 /
 
 
+select * from personal_servicio;
+
 select * from pedidos;
 
+select * from detalle_pedido
 
 
 
