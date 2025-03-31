@@ -174,6 +174,12 @@ create or replace procedure registrar_pedido(
         if ped_activos_empleado < 5 then
         
             IdPed:=seq_pedidos.nextval;
+            
+            --Actualizar pedidos activos del empleado en la tabla personal_servicio
+            
+            UPDATE personal_servicio
+            SET pedidos_activos = pedidos_activos+1
+            WHERE id_personal = arg_id_personal;
         
             --Añadir pedido a tabla pedidos
     
@@ -194,12 +200,6 @@ create or replace procedure registrar_pedido(
                 VALUES (IdPed, arg_id_segundo_plato, 1);
                 commit;
             end IF;
-            
-            --Actualizar pedidos activos del empleado en la tabla personal_servicio
-            
-            UPDATE personal_servicio
-            SET pedidos_activos = pedidos_activos+1
-            WHERE id_personal = arg_id_personal;
             
             commit;
         
@@ -274,9 +274,12 @@ select * from detalle_pedido;
 -- si tenga 5 pedidos activos, se lanzara la excepcion 20003 donde se avisara que el limite de pedidos activos de ese emplado
 -- se ha alcanzado.
 --
--- * P4.2
+-- * P4.2  ¿Cómo evitas que dos transacciones concurrentes asignen un pedido al mismo personal de servicio cuyos pedidos activos estan a punto de superar el limite?
+-- En el codigo añadimos la clausula FOR UPDATE en el SELECT que obtiene el numero de pedidos activos de un empleado.
+-- Esto bloquea esa fila hasta que finalice la transaccion actual. Así, si coinciden dos transacciones, una deberá
+-- esperar hasta que finalice la otra y comprobar de nuevo el numero de pedidos asignados al empleado
 --
--- * P4.3
+-- * P4.3 
 --
 -- * P4.4
 --
