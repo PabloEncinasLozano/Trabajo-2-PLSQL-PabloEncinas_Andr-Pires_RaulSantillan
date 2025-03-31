@@ -338,10 +338,60 @@ exec inicializa_test;
 
 -- Completa lost test, incluyendo al menos los del enunciado y añadiendo los que consideres necesarios
 
+
 create or replace procedure test_registrar_pedido is
-begin
-	 
+begin 
   --caso 1 Pedido correct, se realiza
+  dbms_output.put_line('------------------Test1: Pedido correcto se registra adecuadamente------------------');
+
+  -- Registrar un pedido
+  registrar_pedido(1, 1, 1, 2);
+  
+  -- Verificar que el pedido se ha insertado en la tabla PEDIDOS
+  Declare
+    pedidos INTEGER;
+  begin
+    select count(*) into pedidos
+    from pedidos 
+    where id_cliente = 1 and id_personal = 1;
+    
+    IF pedidos = 1 THEN
+      dbms_output.put_line('BIEN: El pedido se ha registrado en la tabla PEDIDOS');
+    else
+      dbms_output.put_line('MAL: El pedido no se ha registrado correctamente en la tabla PEDIDOS');
+    end IF;
+  end;
+
+  -- Verificar que los platos se han insertado en la tabla DETALLE_PEDIDO
+  declare
+    detalle_pedidos INTEGER;
+  begin
+    select count(*) into detalle_pedidos
+    from detalle_pedido 
+    where id_plato in (1, 2);
+    
+    IF detalle_pedidos = 2 then
+      dbms_output.put_line('BIEN: Los platos se han registrado en la tabla DETALLE_PEDIDO');
+    else
+      dbms_output.put_line('MAL: Los platos no se han registrado correctamente en la tabla DETALLE_PEDIDO.);
+    end if;
+  end;
+
+  -- Verificar que se ha actualizado el número de pedidos activos del personal
+  declare
+    pedidos_activos INTEGER;
+  begin
+    select pedidos_activos into pedidos_activos 
+    from personal_servicio 
+    where id_personal = 1;
+    
+    IF pedidos_activos = 1 then
+      dbms_output.put_line('BIEN: Se ha actualizado el número de pedidos activos del personal');
+    else
+      dbms_output.put_line('MAL: No se ha actualizado correctamente el numero de pedidos activos del personal');
+    end IF;
+  end;
+  
   
   begin
     inicializa_test;
