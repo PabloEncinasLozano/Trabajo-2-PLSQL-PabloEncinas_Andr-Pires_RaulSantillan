@@ -167,7 +167,8 @@ create or replace procedure registrar_pedido(
         
         select pedidos_activos into ped_activos_empleado
         from personal_servicio
-        where id_personal = arg_id_personal;
+        where id_personal = arg_id_personal
+        FOR UPDATE;
         
         -- Revisar pedidos activos del empleado
         if ped_activos_empleado < 5 then
@@ -280,7 +281,7 @@ select * from detalle_pedido;
 -- * P4.4
 --
 -- * P4.5 ¿Que tipo de estrategia de programacion has utilizado? ¿Como puede verse en tu codigo?
--- La estrategia principal que se ha usado ha sido defensiba ya que se ha ido haciendo una revision de los datos guardados
+-- La estrategia principal que se ha usado ha sido defensiva ya que se ha ido haciendo una revision de los datos guardados
 -- antes de modificar cualquier tabla involucrada. Aun asi, hay dos puntos, en la revision de si existen los platos, que
 -- se ha usado una estrategia intermedia, ya que tras hacer el select, se hace el tratamiento de la excepcion en caso 
 -- de que esta select devuelva un error de tipo NO_DATA_FOUND.
