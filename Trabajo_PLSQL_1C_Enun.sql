@@ -51,27 +51,6 @@ CREATE TABLE detalle_pedido (
 );
 
 
-
--------Insert para las pruebas
-/*
- INSERT INTO clientes (id_cliente, nombre, apellido, telefono) 
- VALUES (10, 'Juan', 'Martínez', '555123456');
-
- INSERT INTO personal_servicio (id_personal, nombre, apellido, pedidos_activos) 
- VALUES (21, 'Pedro', 'Gómez', 0);
-
- INSERT INTO platos (id_plato, nombre, precio, disponible) 
- VALUES (1, 'Sopa', 12, 1);
- 
-INSERT INTO platos (id_plato, nombre, precio, disponible) 
- VALUES (7, 'Hamborguesa', 23, 1);
-
-COMMIT;
-*/
-
---------------------------------------------
-
-
 	
 -- Procedimiento a implementar para realizar la reserva
 create or replace procedure registrar_pedido(
@@ -223,47 +202,6 @@ end;
 /
 
 
-/*
--------<Zona de pruebas>--------
-
-begin
-
- 
- --registrar_pedido(10,21,1);
- --registrar_pedido(10,21,NULL,7);
- 
- --Revisando seleccion de 0 platos 
- --registrar_pedido(10,21,NULL,NULL);
- 
- --Revisando limite por empleado
- --registrar_pedido(10,21,1,7);
- --registrar_pedido(10,21,1);
- --registrar_pedido(10,21,1);
- 
- 
- --Revisando no queda ese plato disponible
- 
- --update platos
- --set disponible = 0
- --where id_plato=1;
- 
-
- --registrar_pedido(10,21,1,7);
-
-
-
-end;
-/
-
-*/
-
-select * from personal_servicio;
-
-select * from pedidos;
-
-select * from detalle_pedido;
-
-
 
 ---------------------------------
 
@@ -380,9 +318,9 @@ begin
     where id_plato in (1, 2);
     
     IF detalle_pedidos = 2 then
-      dbms_output.put_line('BIEN: Los platos se han registrado en la tabla DETALLE_PEDIDO');
+      dbms_output.put_line('BIEN: Los platos se han registrado en la tabla DETALLE_PEDIDO.');
     else
-      dbms_output.put_line('MAL: Los platos no se han registrado correctamente en la tabla DETALLE_PEDIDO.);
+      dbms_output.put_line('MAL: Los platos no se han registrado correctamente en la tabla DETALLE_PEDIDO. ');
     end if;
   end;
 
@@ -406,10 +344,10 @@ begin
     inicializa_test;
   end;
   
-  -- Idem para el resto de casos
+  ---- Idem para el resto de casos
 
 
- -- Si se realiza un pedido vac´ıo (sin platos) devuelve el error -200002.
+ --- Si se realiza un pedido vac´ıo (sin platos) devuelve el error -200002.
  
     begin
     dbms_output.put_line('------------------Test2: Realizar un pedido vacio (sin platos)------------------');
