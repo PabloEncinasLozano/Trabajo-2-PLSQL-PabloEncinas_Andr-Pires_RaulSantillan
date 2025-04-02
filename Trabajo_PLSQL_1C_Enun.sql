@@ -1,3 +1,6 @@
+--Autores: Pablo Encinas, Andre Pires, Raul Santillan
+--Repositorio GIT: https://github.com/PabloEncinasLozano/Trabajo-2-PLSQL-PabloEncinas_AndrePires_RaulSantillan.git
+
 DROP TABLE detalle_pedido CASCADE CONSTRAINTS;
 DROP TABLE pedidos CASCADE CONSTRAINTS;
 DROP TABLE platos CASCADE CONSTRAINTS;
