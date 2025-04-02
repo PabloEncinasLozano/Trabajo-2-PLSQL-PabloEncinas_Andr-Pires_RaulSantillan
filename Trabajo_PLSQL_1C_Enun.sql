@@ -195,8 +195,6 @@ create or replace procedure registrar_pedido(
         DBMS_OUTPUT.PUT_LINE('---------No se ha seleccionado ningun plato (cambiarlo a exception)');
              
     end IF;
-
-  --null; -- sustituye esta línea por tu código
    
 end;
 /
@@ -283,12 +281,12 @@ end;
 
 exec inicializa_test;
 
--- Completa lost test, incluyendo al menos los del enunciado y añadiendo los que consideres necesarios
+-- Completa los test, incluyendo al menos los del enunciado y añadiendo los que consideres necesarios
 
 
 create or replace procedure test_registrar_pedido is
 begin 
-  --caso 1 Pedido correct, se realiza
+  --caso 1 Pedido correcto, se realiza
   dbms_output.put_line('------------------Test1: Pedido correcto se registra adecuadamente------------------');
 
   -- Registrar un pedido
@@ -347,7 +345,7 @@ begin
   ---- Idem para el resto de casos
 
 
- --- Si se realiza un pedido vac´ıo (sin platos) devuelve el error -200002.
+ --- Si se realiza un pedido vacio (sin platos) devuelve el error -20002.
  
     begin
     dbms_output.put_line('------------------Test2: Realizar un pedido vacio (sin platos)------------------');
@@ -390,7 +388,7 @@ begin
     end;
     
     
-     -- Si se realiza un pedido que incluye un plato que no est´a ya disponible devuelve el error -20001.
+     -- Si se realiza un pedido que incluye un plato que no esta ya disponible devuelve el error -20001.
      
      begin
       dbms_output.put_line('------------------Test4: Realiza un pedido con plato no disponible------------------');
