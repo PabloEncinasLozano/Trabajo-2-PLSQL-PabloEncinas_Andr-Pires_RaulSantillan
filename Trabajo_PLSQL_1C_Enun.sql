@@ -279,7 +279,12 @@ select * from detalle_pedido;
 -- Esto bloquea esa fila hasta que finalice la transaccion actual. Así, si coinciden dos transacciones, una deberá
 -- esperar hasta que finalice la otra y comprobar de nuevo el numero de pedidos asignados al empleado
 --
--- * P4.3 
+-- * P4.3 Una vez hechas las comprobaciones en los pasos 1 y 2, ¿podrıas asegurar que el pedido se puede realizar de manera correcta en el paso 4 y no se generan inconsistencias? 
+-- ¿Por que? Recuerda que trabajamos en entornos con conexiones .concurrentes
+-- Si por diversos motivos. Se usa FOR UPDATE, lo cual evita que dos transacciones concurrentes asignen el mismo empleado sin respetar el límite. Tambien,
+-- gracias a las verificaciones que hacemos antes de insertar y el uso del commit al final ayudan a asegurar la persistencia.
+-- Solo hay un posble caso que hemos detectado que podria dar problema y seria que si ocurre un fallo entre la actualización de pedidos_activos y 
+-- la insercion en pedidos, podria quedar un registro en personal_servicio con un numero incorrecto de pedidos activos.
 --
 -- * P4.4
 --
